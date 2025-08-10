@@ -1,0 +1,28 @@
+[project]
+name = "research-agent-monorepo"
+version = "0.2.0"
+requires-python = ">=3.9"
+readme = "README.md"
+dependencies = [
+  "requests",
+  "readability-lxml",
+  "beautifulsoup4",
+  "openai>=1.0.0",
+  "python-dotenv",
+  "pytest",
+  "faiss-cpu",
+  "rank-bm25",
+  "pydantic>=2.5",
+  "langchain>=0.2.0",
+  "research-core",
+  "research-rag",
+  "research-api",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+research-core = { path = "packages/core" }
+research-rag  = { path = "packages/rag" }
+research-api = { path = "packages/api" }
