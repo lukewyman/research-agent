@@ -20,6 +20,7 @@ dependencies = [
   "research-rag",
   "research-api",
   "research-tasks",
+  "research-cache"
 ]
 
 [tool.uv]
@@ -30,3 +31,4 @@ research-core = { path = "packages/core" }
 research-rag  = { path = "packages/rag" }
 research-api = { path = "packages/api" }
 research-tasks = { path = "packages/tasks" }
+research-cache = { path = "packages/cache" }

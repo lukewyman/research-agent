@@ -1552,6 +1552,7 @@ dependencies = [
     { name = "redis" },
     { name = "requests" },
     { name = "research-api" },
+    { name = "research-cache" },
     { name = "research-core" },
     { name = "research-rag" },
     { name = "research-tasks" },
@@ -1572,6 +1573,7 @@ requires-dist = [
     { name = "redis", specifier = ">=5.0" },
     { name = "requests" },
     { name = "research-api", directory = "packages/api" },
+    { name = "research-cache", directory = "packages/cache" },
     { name = "research-core", directory = "packages/core" },
     { name = "research-rag", directory = "packages/rag" },
     { name = "research-tasks", directory = "packages/tasks" },
@@ -1591,6 +1593,17 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.110" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.23" },
 ]
+
+[[package]]
+name = "research-cache"
+version = "0.1.0"
+source = { directory = "packages/cache" }
+dependencies = [
+    { name = "redis" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "redis", specifier = ">=5.0" }]
 
 [[package]]
 name = "research-core"
