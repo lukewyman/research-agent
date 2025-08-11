@@ -14,9 +14,12 @@ dependencies = [
   "rank-bm25",
   "pydantic>=2.5",
   "langchain>=0.2.0",
+  "celery>=5.3",
+  "redis>=5.0",
   "research-core",
   "research-rag",
   "research-api",
+  "research-tasks",
 ]
 
 [tool.uv]
@@ -26,3 +29,4 @@ package = false
 research-core = { path = "packages/core" }
 research-rag  = { path = "packages/rag" }
 research-api = { path = "packages/api" }
+research-tasks = { path = "packages/tasks" }

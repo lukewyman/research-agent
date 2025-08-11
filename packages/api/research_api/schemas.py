@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Any
 from pydantic import BaseModel, Field
 
 class IngestRequest(BaseModel):
@@ -28,3 +28,13 @@ class AnswerResponse(BaseModel):
     bullets: List[str]
     sources: List[SourceItem]
     verification: Optional[List[dict]] = None
+
+class JobSubmissionResponse(BaseModel):
+    job_id: str
+
+class JobStatusResponse(BaseModel):
+    job_id: str
+    state: Literal["PENDING","STARTED","PROGRESS","SUCCESS","FAILURE","RETRY","REVOKED"]
+    progress: Optional[int] = None
+    detail: Optional[str] = None
+    result: Optional[Any] = None

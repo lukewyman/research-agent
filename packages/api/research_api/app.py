@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from research_api.routers import ingest, query
+from research_api.routers import ingest, query, jobs
 
 app = FastAPI(title="Research Agent API", version="0.1.0")
 
@@ -21,3 +21,4 @@ def healthz():
 
 app.include_router(ingest.router)
 app.include_router(query.router)
+app.include_router(jobs.router)
