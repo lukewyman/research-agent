@@ -2,13 +2,13 @@ import os, json, textwrap, time
 from typing import List
 from .celery_app import app
 
-from research_rag.ingest import ingest_urls
-from research_rag.vector_faiss import FaissStore
-from research_rag.embeddings import embedding_dim
-from research_rag.retrieve import retrieve as retrieve_vector
-from research_rag.hybrid import hybrid_retrieve as retrieve_hybrid
-from research_rag.synthesize import synthesize as grounded_summarize
-from research_rag.verify import verify_claims
+from newsrag_retrieval.ingest import ingest_urls
+from newsrag_retrieval.vector_faiss import FaissStore
+from newsrag_retrieval.embeddings import embedding_dim
+from newsrag_retrieval.retrieve import retrieve as retrieve_vector
+from newsrag_retrieval.hybrid import hybrid_retrieve as retrieve_hybrid
+from newsrag_retrieval.synthesize import synthesize as grounded_summarize
+from newsrag_retrieval.verify import verify_claims
 
 RAGDB_ROOT = os.getenv("RAGDB_ROOT", ".ragdb")
 EMBED_MODEL = "text-embedding-3-small"
@@ -92,8 +92,8 @@ def answer_question_task(self, corpus_id: str, question: str, retriever: str = "
     return {"tldr": tldr, "bullets": bullets, "sources": sources, "verification": verification}
 
 
-from research_feeds import fetch_topics_once
-from research_tasks.celery_app import app
+from newsrag_feeds import fetch_topics_once
+from newsrag_tasks.celery_app import app
 
 @app.task(bind=True, name="fetch_feeds_task")
 def fetch_feeds_task(self, corpus_id: str):

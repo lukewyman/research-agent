@@ -1,5 +1,5 @@
 import argparse
-from research_core import fetch_article_text, summarize
+from newsrag_core import fetch_article_text, summarize
 
 def main():
     p = argparse.ArgumentParser()

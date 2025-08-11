@@ -1,7 +1,7 @@
 import json
 from openai import OpenAI
-from research_core.config import OPENAI_API_KEY, LLM_MODEL
-from research_core.models import GroundedSummary
+from newsrag_core.config import OPENAI_API_KEY, LLM_MODEL
+from newsrag_core.models import GroundedSummary
 from pydantic import ValidationError
 
 # LangChain for schema-shaped instructions

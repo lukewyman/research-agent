@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "research-api"
+name = "newsrag-api"
 version = "0.1.1"
 requires-python = ">=3.9"
 description = "FastAPI layer for the research agent (Phase 4)"
@@ -13,4 +13,4 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["research_api"]
+packages = ["newsrag_api"]

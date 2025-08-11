@@ -902,6 +902,111 @@ wheels = [
 ]
 
 [[package]]
+name = "newsrag"
+version = "0.2.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "celery" },
+    { name = "faiss-cpu" },
+    { name = "langchain" },
+    { name = "newsrag-api" },
+    { name = "newsrag-cache" },
+    { name = "newsrag-core" },
+    { name = "newsrag-feeds" },
+    { name = "newsrag-retrieval" },
+    { name = "newsrag-tasks" },
+    { name = "openai" },
+    { name = "pydantic" },
+    { name = "pytest" },
+    { name = "python-dotenv" },
+    { name = "rank-bm25" },
+    { name = "readability-lxml" },
+    { name = "redis" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4" },
+    { name = "celery", specifier = ">=5.3" },
+    { name = "faiss-cpu" },
+    { name = "langchain", specifier = ">=0.2.0" },
+    { name = "newsrag-api", directory = "packages/api" },
+    { name = "newsrag-cache", directory = "packages/cache" },
+    { name = "newsrag-core", directory = "packages/core" },
+    { name = "newsrag-feeds", directory = "packages/feeds" },
+    { name = "newsrag-retrieval", directory = "packages/retrieval" },
+    { name = "newsrag-tasks", directory = "packages/tasks" },
+    { name = "openai", specifier = ">=1.0.0" },
+    { name = "pydantic", specifier = ">=2.5" },
+    { name = "pytest" },
+    { name = "python-dotenv" },
+    { name = "rank-bm25" },
+    { name = "readability-lxml" },
+    { name = "redis", specifier = ">=5.0" },
+    { name = "requests" },
+]
+
+[[package]]
+name = "newsrag-api"
+version = "0.1.1"
+source = { directory = "packages/api" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.110" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.23" },
+]
+
+[[package]]
+name = "newsrag-cache"
+version = "0.1.0"
+source = { directory = "packages/cache" }
+dependencies = [
+    { name = "redis" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "redis", specifier = ">=5.0" }]
+
+[[package]]
+name = "newsrag-core"
+version = "0.1.1"
+source = { directory = "packages/core" }
+
+[[package]]
+name = "newsrag-feeds"
+version = "0.1.0"
+source = { directory = "packages/feeds" }
+dependencies = [
+    { name = "feedparser" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "feedparser", specifier = ">=6.0" },
+    { name = "python-dateutil", specifier = ">=2.9" },
+    { name = "requests", specifier = ">=2.32" },
+]
+
+[[package]]
+name = "newsrag-retrieval"
+version = "0.1.5"
+source = { directory = "packages/retrieval" }
+
+[[package]]
+name = "newsrag-tasks"
+version = "0.1.1"
+source = { directory = "packages/tasks" }
+
+[[package]]
 name = "numpy"
 version = "2.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1545,111 +1650,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/f3/61/d7545dafb7ac2230c
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3f/51/d4db610ef29373b879047326cbf6fa98b6c1969d6f6dc423279de2b1be2c/requests_toolbelt-1.0.0-py2.py3-none-any.whl", hash = "sha256:cccfdd665f0a24fcf4726e690f65639d272bb0637b9b92dfd91a5568ccf6bd06", size = 54481, upload-time = "2023-05-01T04:11:28.427Z" },
 ]
-
-[[package]]
-name = "research-agent-monorepo"
-version = "0.2.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "celery" },
-    { name = "faiss-cpu" },
-    { name = "langchain" },
-    { name = "openai" },
-    { name = "pydantic" },
-    { name = "pytest" },
-    { name = "python-dotenv" },
-    { name = "rank-bm25" },
-    { name = "readability-lxml" },
-    { name = "redis" },
-    { name = "requests" },
-    { name = "research-api" },
-    { name = "research-cache" },
-    { name = "research-core" },
-    { name = "research-feeds" },
-    { name = "research-rag" },
-    { name = "research-tasks" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "beautifulsoup4" },
-    { name = "celery", specifier = ">=5.3" },
-    { name = "faiss-cpu" },
-    { name = "langchain", specifier = ">=0.2.0" },
-    { name = "openai", specifier = ">=1.0.0" },
-    { name = "pydantic", specifier = ">=2.5" },
-    { name = "pytest" },
-    { name = "python-dotenv" },
-    { name = "rank-bm25" },
-    { name = "readability-lxml" },
-    { name = "redis", specifier = ">=5.0" },
-    { name = "requests" },
-    { name = "research-api", directory = "packages/api" },
-    { name = "research-cache", directory = "packages/cache" },
-    { name = "research-core", directory = "packages/core" },
-    { name = "research-feeds", directory = "packages/feeds" },
-    { name = "research-rag", directory = "packages/rag" },
-    { name = "research-tasks", directory = "packages/tasks" },
-]
-
-[[package]]
-name = "research-api"
-version = "0.1.1"
-source = { directory = "packages/api" }
-dependencies = [
-    { name = "fastapi" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.110" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.23" },
-]
-
-[[package]]
-name = "research-cache"
-version = "0.1.0"
-source = { directory = "packages/cache" }
-dependencies = [
-    { name = "redis" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "redis", specifier = ">=5.0" }]
-
-[[package]]
-name = "research-core"
-version = "0.1.1"
-source = { directory = "packages/core" }
-
-[[package]]
-name = "research-feeds"
-version = "0.1.0"
-source = { directory = "packages/feeds" }
-dependencies = [
-    { name = "feedparser" },
-    { name = "python-dateutil" },
-    { name = "requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "feedparser", specifier = ">=6.0" },
-    { name = "python-dateutil", specifier = ">=2.9" },
-    { name = "requests", specifier = ">=2.32" },
-]
-
-[[package]]
-name = "research-rag"
-version = "0.1.5"
-source = { directory = "packages/rag" }
-
-[[package]]
-name = "research-tasks"
-version = "0.1.1"
-source = { directory = "packages/tasks" }
 
 [[package]]
 name = "sgmllib3k"

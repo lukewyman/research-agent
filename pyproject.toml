@@ -1,5 +1,5 @@
 [project]
-name = "research-agent-monorepo"
+name = "newsrag"
 version = "0.2.0"
 requires-python = ">=3.9"
 readme = "README.md"
@@ -16,21 +16,21 @@ dependencies = [
   "langchain>=0.2.0",
   "celery>=5.3",
   "redis>=5.0",
-  "research-core",
-  "research-rag",
-  "research-api",
-  "research-tasks",
-  "research-cache",
-  "research-feeds",
+  "newsrag-core",
+  "newsrag-retrieval",
+  "newsrag-api",
+  "newsrag-tasks",
+  "newsrag-cache",
+  "newsrag-feeds",
 ]
 
 [tool.uv]
 package = false
 
 [tool.uv.sources]
-research-core = { path = "packages/core" }
-research-rag  = { path = "packages/rag" }
-research-api = { path = "packages/api" }
-research-tasks = { path = "packages/tasks" }
-research-cache = { path = "packages/cache" }
-research-feeds = { path = "packages/feeds" }
+newsrag-core = { path = "packages/core" }
+newsrag-retrieval  = { path = "packages/retrieval" }
+newsrag-api = { path = "packages/api" }
+newsrag-tasks = { path = "packages/tasks" }
+newsrag-cache = { path = "packages/cache" }
+newsrag-feeds = { path = "packages/feeds" }

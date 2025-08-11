@@ -1,8 +1,8 @@
 import json, textwrap
 from typing import List, Tuple
 from openai import OpenAI
-from research_core.config import OPENAI_API_KEY, LLM_MODEL
-from research_core.models import VerificationOutput
+from newsrag_core.config import OPENAI_API_KEY, LLM_MODEL
+from newsrag_core.models import VerificationOutput
 from pydantic import ValidationError
 
 client = OpenAI(api_key=OPENAI_API_KEY)

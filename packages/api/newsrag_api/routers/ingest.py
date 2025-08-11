@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from research_api.schemas import IngestRequest, JobSubmissionResponse
-from research_tasks.tasks import ingest_urls_task
+from newsrag_api.schemas import IngestRequest, JobSubmissionResponse
+from newsrag_tasks.tasks import ingest_urls_task
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 

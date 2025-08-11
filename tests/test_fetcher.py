@@ -1,4 +1,4 @@
-from research_core import fetch_article_text
+from newsrag_core import fetch_article_text
 
 
 def test_fetch_article_text():

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from celery.result import AsyncResult
-from research_tasks.celery_app import app as celery_app
-from research_api.schemas import JobStatusResponse
+from newsrag_tasks.celery_app import app as celery_app
+from newsrag_api.schemas import JobStatusResponse
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 

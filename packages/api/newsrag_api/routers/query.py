@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from research_api.schemas import QueryRequest, JobSubmissionResponse
-from research_tasks.tasks import answer_question_task
+from newsrag_api.schemas import QueryRequest, JobSubmissionResponse
+from newsrag_tasks.tasks import answer_question_task
 
 router = APIRouter(prefix="/query", tags=["query"])
 

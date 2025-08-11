@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "research-feeds"
+name = "newsrag-feeds"
 version = "0.1.0"
 requires-python = ">=3.9"
 dependencies = [
@@ -13,4 +13,4 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["research_feeds"]
+packages = ["newsrag_feeds"]

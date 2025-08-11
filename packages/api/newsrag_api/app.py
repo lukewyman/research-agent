@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from research_api.routers import ingest, query, jobs
+from newsrag_api.routers import ingest, query, jobs
 
 app = FastAPI(title="Research Agent API", version="0.1.0")
 

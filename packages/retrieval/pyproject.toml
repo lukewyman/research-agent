@@ -3,11 +3,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "research-rag"
+name = "newsrag-retrieval"
 version = "0.1.5"
 requires-python = ">=3.9"
 description = "RAG utilities for the research agent"
 dependencies = []
 
 [tool.hatch.build.targets.wheel]
-packages = ["research_rag"]
+packages = ["newsrag_retrieval"]

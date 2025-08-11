@@ -3,14 +3,14 @@ import argparse
 import os
 import textwrap
 
-from research_core import summarize as summarize_phase1
-from research_rag.ingest import ingest_urls
-from research_rag.vector_faiss import FaissStore
-from research_rag.embeddings import embedding_dim
-from research_rag.retrieve import retrieve as retrieve_vector
-from research_rag.hybrid import hybrid_retrieve as retrieve_hybrid  # comment this line if you didn't add hybrid.py
-from research_rag.verify import verify_claims
-from research_rag.synthesize import synthesize as grounded_summarize
+from newsrag_core import summarize as summarize_phase1
+from newsrag_retrieval.ingest import ingest_urls
+from newsrag_retrieval.vector_faiss import FaissStore
+from newsrag_retrieval.embeddings import embedding_dim
+from newsrag_retrieval.retrieve import retrieve as retrieve_vector
+from newsrag_retrieval.hybrid import hybrid_retrieve as retrieve_hybrid  # comment this line if you didn't add hybrid.py
+from newsrag_retrieval.verify import verify_claims
+from newsrag_retrieval.synthesize import synthesize as grounded_summarize
 
 
 def format_context(hits):

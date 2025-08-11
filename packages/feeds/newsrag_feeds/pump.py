@@ -1,6 +1,6 @@
 import os, time
 from typing import Dict, List, Set
-from research_cache import get_redis, sha1
+from newsrag_cache import get_redis, sha1
 from .sources import google_news_rss, guardian_search
 
 # Env knobs

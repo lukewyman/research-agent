@@ -2,8 +2,8 @@ from typing import List
 import os
 import numpy as np
 from openai import OpenAI
-from research_core.config import OPENAI_API_KEY
-from research_cache import get_redis, key_embed, mget_json, mset_json
+from newsrag_core.config import OPENAI_API_KEY
+from newsrag_cache import get_redis, key_embed, mget_json, mset_json
 
 _EMBED_MODEL = "text-embedding-3-small"
 _client = OpenAI(api_key=OPENAI_API_KEY)

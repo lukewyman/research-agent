@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: research-worker
+  namespace: research
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: research-worker }
+  template:
+    metadata:
+      labels: { app: research-worker }
+    spec:
+      containers:
+        - name: worker
+          image: research/worker:dev
+          envFrom:
+            - configMapRef: { name: research-env }
+            - secretRef:    { name: research-secrets }
+          volumeMounts:
+            - name: ragdb
+              mountPath: /data/ragdb
+          command: ["celery","-A","research_tasks.celery_app.app","worker","-l","info","--concurrency","2"]
+      volumes:
+        - name: ragdb
+          emptyDir: {}

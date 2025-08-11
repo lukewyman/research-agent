@@ -2,7 +2,7 @@ import os
 import requests
 from readability import Document
 from bs4 import BeautifulSoup
-from research_cache import get_redis, key_page, get_json, cache_json
+from newsrag_cache import get_redis, key_page, get_json, cache_json
 
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")

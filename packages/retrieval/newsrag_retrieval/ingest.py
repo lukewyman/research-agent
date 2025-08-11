@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from research_core.fetcher import fetch_article_text
+from newsrag_core.fetcher import fetch_article_text
 from .chunking import simple_chunks
 from .embeddings import embed_texts
 

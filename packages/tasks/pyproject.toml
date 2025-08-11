@@ -3,10 +3,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "research-tasks"
+name = "newsrag-tasks"
 version = "0.1.1"
 requires-python = ">=3.9"
 description = "Celery tasks for research agent"
 
 [tool.hatch.build.targets.wheel]
-packages = ["research_tasks"]
+packages = ["newsrag_tasks"]
