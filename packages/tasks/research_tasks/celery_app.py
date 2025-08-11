@@ -15,3 +15,17 @@ app.conf.update(
     result_expires=86400,  # 1 day
     worker_send_task_events=True,
 )
+
+
+# === Beat schedule (enable with FEEDS_ENABLE=1) ===
+if os.getenv("FEEDS_ENABLE", "1") != "0":
+    from celery.schedules import crontab
+    FEEDS_CRON = os.getenv("FEEDS_CRON", "*/5")          # every 5 minutes
+    CORPUS_ID_DEFAULT = os.getenv("FEEDS_CORPUS_ID", "news-live")
+    app.conf.beat_schedule = {
+        "poll-feeds": {
+            "task": "fetch_feeds_task",                  # name from @app.task(name="fetch_feeds_task")
+            "schedule": crontab(minute=FEEDS_CRON),
+            "args": (CORPUS_ID_DEFAULT,),
+        }
+    }

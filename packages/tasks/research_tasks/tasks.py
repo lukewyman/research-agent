@@ -90,3 +90,28 @@ def answer_question_task(self, corpus_id: str, question: str, retriever: str = "
                for i, (m, score) in enumerate(hits)]
     self.update_state(state="PROGRESS", meta={"step": "done", "pct": 100})
     return {"tldr": tldr, "bullets": bullets, "sources": sources, "verification": verification}
+
+
+from research_feeds import fetch_topics_once
+from research_tasks.celery_app import app
+
+@app.task(bind=True, name="fetch_feeds_task")
+def fetch_feeds_task(self, corpus_id: str):
+    """Poll feeds → enqueue ingest jobs for any NEW URLs per topic."""
+    topics = fetch_topics_once()  # {topic: [url,...]}
+    enqueued = 0
+    for topic, urls in topics.items():
+        if not urls:
+            continue
+        # batch small groups to reduce embed overhead per job
+        batch = []
+        for u in urls:
+            batch.append(u)
+            if len(batch) >= 8:  # tune batch size
+                ingest_urls_task.delay(corpus_id, batch)
+                enqueued += len(batch)
+                batch = []
+        if batch:
+            ingest_urls_task.delay(corpus_id, batch)
+            enqueued += len(batch)
+    return {"topics": {k: len(v) for k, v in topics.items()}, "enqueued": enqueued}

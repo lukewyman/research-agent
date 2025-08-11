@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "research-feeds"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+  "requests>=2.32",
+  "feedparser>=6.0",   # for Google News RSS
+  "python-dateutil>=2.9"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["research_feeds"]
