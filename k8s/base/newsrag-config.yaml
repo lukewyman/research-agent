@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: newsrag-config
+data:
+  # --- Redis / Celery wiring (in-cluster service name) ---
+  CELERY_BROKER_URL: redis://redis:6379/0
+  CELERY_RESULT_BACKEND: redis://redis:6379/1
+  REDIS_URL: redis://redis:6379/2
+
+  # --- Feeds / scheduling ---
+  FEEDS_ENABLE: "0"                 # default off in base; Beat deploy sets it to "1" explicitly
+  FEEDS_TOPICS: "us politics,technology,ukraine war"
+  FEEDS_CORPUS_ID: "news-live"
+
+  # --- RAG persistence / caching ---
+  RAGDB_ROOT: "/data/ragdb"         # volume path (emptyDir in dev)
+  CACHE_ENABLE: "1"
+  CACHE_PAGE_TTL_SEC: "21600"       # 6h
+  CACHE_EMBED_TTL_SEC: "2592000"    # 30d
+
+  # --- API convenience (future web UI) ---
+  CORS_ORIGINS: "*"

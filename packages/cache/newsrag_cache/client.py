@@ -1,31 +1,94 @@
-import json, os
-from typing import Any, Iterable, List, Tuple
-import redis
+# packages/cache/newsrag_cache/client.py
+from __future__ import annotations
+import os, json, hashlib
+from typing import Any, Dict, Iterable, List, Optional
 
-def get_redis() -> redis.Redis:
-    url = os.getenv("REDIS_URL", "redis://localhost:6379/2")  # separate DB from Celery
-    return redis.from_url(url, decode_responses=True)
+try:
+    import redis  # type: ignore
+except Exception:  # pragma: no cover
+    redis = None  # type: ignore
 
-def cache_json(r: redis.Redis, key: str, value: Any, ttl_sec: int | None = None):
-    payload = json.dumps(value, ensure_ascii=False)
-    if ttl_sec:
-        r.setex(key, ttl_sec, payload)
-    else:
-        r.set(key, payload)
 
-def get_json(r: redis.Redis, key: str) -> Any | None:
-    s = r.get(key)
-    return None if s is None else json.loads(s)
+def get_redis() -> Optional["redis.Redis"]:
+    """
+    Return a connected Redis client or None if:
+      - REDIS_URL missing/empty/invalid
+      - redis package missing
+      - connectivity probe fails
+    """
+    if redis is None:
+        return None
 
-def mget_json(r: redis.Redis, keys: List[str]) -> List[Any | None]:
-    values = r.mget(keys)
-    return [None if v is None else json.loads(v) for v in values]
+    url = (os.getenv("REDIS_URL") or "").strip()
+    if not url:
+        return None
+    if not (url.startswith("redis://") or url.startswith("rediss://") or url.startswith("unix://")):
+        return None
 
-def mset_json(r: redis.Redis, items: List[Tuple[str, Any]], ttl_sec: int | None = None):
-    p = r.pipeline()
-    for k, v in items:
-        if ttl_sec:
-            p.setex(k, ttl_sec, json.dumps(v, ensure_ascii=False))
+    try:
+        r = redis.Redis.from_url(
+            url,
+            decode_responses=True,
+            socket_connect_timeout=0.25,
+            socket_timeout=0.5,
+        )
+        r.ping()
+        return r
+    except Exception:
+        return None
+
+
+def get_json(r: Optional["redis.Redis"], key: str) -> Optional[Any]:
+    if r is None:
+        return None
+    try:
+        s = r.get(key)
+        return json.loads(s) if s else None
+    except Exception:
+        return None
+
+
+def set_json(r: Optional["redis.Redis"], key: str, value: Any, ttl_sec: int = 0) -> None:
+    if r is None:
+        return
+    try:
+        payload = json.dumps(value)
+        if ttl_sec > 0:
+            r.setex(key, ttl_sec, payload)
         else:
-            p.set(k, json.dumps(v, ensure_ascii=False))
-    p.execute()
+            r.set(key, payload)
+    except Exception:
+        return
+
+
+# ---------- Back-compat helpers (used by feeds/pump etc.) ----------
+
+def sha1(s: str) -> str:
+    return hashlib.sha1(s.encode("utf-8")).hexdigest()
+
+
+def cache_json(r: Optional["redis.Redis"], key: str, compute_fn, ttl_sec: int = 0) -> Any:
+    """
+    Read-through cache:
+      - If cached present → return it
+      - Else compute via compute_fn(), store JSON, return result
+    Works even if r is None (just calls compute_fn()).
+    """
+    cached = get_json(r, key)
+    if cached is not None:
+        return cached
+    val = compute_fn()
+    try:
+        set_json(r, key, val, ttl_sec=ttl_sec)
+    except Exception:
+        pass
+    return val
+
+
+def mget_json(r: Optional["redis.Redis"], keys: Iterable[str]) -> List[Optional[Any]]:
+    return [get_json(r, k) for k in keys]
+
+
+def mset_json(r: Optional["redis.Redis"], mapping: Dict[str, Any], ttl_sec: int = 0) -> None:
+    for k, v in mapping.items():
+        set_json(r, k, v, ttl_sec=ttl_sec)

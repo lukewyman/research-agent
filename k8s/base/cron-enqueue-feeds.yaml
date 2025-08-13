@@ -1,29 +1,22 @@
+# k8s/base/cron-enqueue-feeds.yaml
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: enqueue-feeds
-  namespace: research
+  name: newsrag-enqueue-feeds
 spec:
-  schedule: "*/5 * * * *"   # every 5 minutes
+  schedule: "0 * * * *"  # every hour on the hour
   jobTemplate:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           containers:
-            - name: enqueuer
-              image: research/worker:dev   # reuse worker image (has code + deps)
+            - name: enqueue-feeds
+              image: newsrag/worker:dev
+              imagePullPolicy: IfNotPresent
+              command: ["uv", "run", "python", "-m", "newsrag_tasks.enqueue_feeds"]
               envFrom:
-                - configMapRef: { name: research-env }
-                - secretRef:    { name: research-secrets }
-              command:
-                - sh
-                - -lc
-                - |
-                  python - <<'PY'
-                  import os
-                  from newsrag_tasks.celery_app import app
-                  corpus = os.getenv("FEEDS_CORPUS_ID","news-live")
-                  app.send_task("fetch_feeds_task", args=(corpus,))
-                  print("enqueued feeds for", corpus)
-                  PY
+                - configMapRef:
+                    name: newsrag-config
+                - secretRef:
+                    name: newsrag-secret

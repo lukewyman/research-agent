@@ -16,6 +16,7 @@ app.conf.update(
     worker_send_task_events=True,
 )
 
+import newsrag_tasks.tasks  # noqa: F401
 
 # === Beat schedule (enable with FEEDS_ENABLE=1) ===
 if os.getenv("FEEDS_ENABLE", "1") != "0":

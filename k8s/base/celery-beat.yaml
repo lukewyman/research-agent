@@ -1,0 +1,36 @@
+# k8s/base/celery-beat.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newsrag-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: newsrag-beat }
+  template:
+    metadata:
+      labels: { app: newsrag-beat }
+    spec:
+      containers:
+        - name: beat
+          image: newsrag/worker:dev   # same image as worker
+          imagePullPolicy: IfNotPresent
+          command: ["celery"]
+          args:
+            - "-A"
+            - "newsrag_tasks.celery_app.app"
+            - "beat"
+            - "-l"
+            - "info"
+          envFrom:
+            - configMapRef: { name: newsrag-config }
+            - secretRef:    { name: newsrag-secrets }
+          env:
+            - name: FEEDS_ENABLE
+              value: "1"   # in-cluster Beat schedules; set to "0" if you switch to CronJob later
+          volumeMounts:
+            - name: ragdb
+              mountPath: /data/ragdb
+      volumes:
+        - name: ragdb
+          emptyDir: {}

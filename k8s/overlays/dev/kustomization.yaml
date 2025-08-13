@@ -1,11 +1,38 @@
+# k8s/overlays/dev/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: research
+namespace: newsrag
+
 resources:
-  - ../../base/namespace.yaml
-  - ../../base/configmap-env.yaml
-  - ../../base/secret-env.yaml
-  - ../../base/redis.yaml
-  - ../../base/deploy-api.yaml
-  - ../../base/deploy-worker.yaml
-  - ../../base/cron-enqueue-feeds.yaml
+  - ../../base   # ← include the base directory (has its own kustomization.yaml)
+
+configMapGenerator:
+  - name: newsrag-config
+    behavior: merge
+    literals:
+      - STORAGE_BACKEND=fs
+      - RAGDB_ROOT=/data/ragdb
+      - FEEDS_ENABLE=1
+      - FEEDS_CORPUS_ID=news-live
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - REDIS_URL=redis://redis:6379/2
+
+secretGenerator:
+  - name: newsrag-secrets
+    envs:
+      - ./.env
+
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    app.kubernetes.io/part-of: newsrag
+
+patches:
+  - target:
+      kind: CronJob
+      name: newsrag-enqueue-feeds
+    patch: |-
+      - op: replace
+        path: /spec/schedule
+        value: "*/5 * * * *"

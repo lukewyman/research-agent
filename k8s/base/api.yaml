@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newsrag-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: newsrag-api }
+  template:
+    metadata:
+      labels: { app: newsrag-api }
+    spec:
+      containers:
+        - name: api
+          image: newsrag/api:dev   # Tilt will build/tag this
+          command: ["uvicorn"]
+          args: ["newsrag_api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+          ports: [{ containerPort: 8000 }]
+          envFrom:
+            - configMapRef: { name: newsrag-config }
+            - secretRef:    { name: newsrag-secrets }
+          # optional; not strictly needed since API enqueues to Celery (worker does the indexing)
+          volumeMounts:
+            - name: ragdb
+              mountPath: /data/ragdb
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: ragdb
+          emptyDir: {}  # dev; in prod you’ll switch to S3 or a PVC if needed
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: newsrag-api
+  namespace: newsrag
+spec:
+  selector: { app: newsrag-api }
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000

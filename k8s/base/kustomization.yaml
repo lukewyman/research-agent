@@ -1,0 +1,12 @@
+# k8s/base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: newsrag
+
+resources:
+  - redis.yaml
+  - celery-worker.yaml
+  - celery-beat.yaml
+  - api.yaml
+  - newsrag-config.yaml
+  - cron-enqueue-feeds.yaml

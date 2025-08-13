@@ -1,46 +1,67 @@
-import faiss, numpy as np, os, pickle
+# packages/retrieval/newsrag_retrieval/vector_faiss.py
+from __future__ import annotations
+from typing import List, Sequence, Tuple, Optional
+import numpy as np
+import faiss
+
 
 class FaissStore:
+    """
+    Flat IP index with cosine-compatible behavior (expects pre-normalized vectors).
+    We also keep a NumPy matrix mirror so we can persist/rebuild without relying on
+    FAISS's internal serialization.
+    """
     def __init__(self, dim: int):
+        self.dim = dim
         self.index = faiss.IndexFlatIP(dim)
-        self.vecs = None
-        self.meta = []
+        self._matrix: Optional[np.ndarray] = None  # rows = vectors
+        self._metas: List[dict] = []
 
-    def add(self, vectors, metas):
-        v = np.array(vectors, dtype="float32")
-        if self.vecs is None:
-            self.vecs = v
+    @property
+    def metas(self) -> List[dict]:
+        return self._metas
+
+    def add(self, vectors: Sequence[Sequence[float]] | np.ndarray, metas: List[dict]) -> None:
+        vecs = np.asarray(vectors, dtype="float32")
+        if vecs.ndim != 2 or vecs.shape[1] != self.dim:
+            raise ValueError(f"Bad shape {vecs.shape}; expected (N, {self.dim})")
+
+        # Maintain matrix mirror for persistence
+        if self._matrix is None:
+            self._matrix = vecs.copy()
         else:
-            self.vecs = np.vstack([self.vecs, v])
-        self.index.add(v)
-        self.meta.extend(metas)
+            self._matrix = np.vstack((self._matrix, vecs))
 
-    def search(self, qvec, k: int = 8):
-        q = np.array([qvec], dtype="float32")
-        D, I = self.index.search(q, k)
-        out = []
-        for rank, idx in enumerate(I[0]):
-            if idx == -1: continue
-            out.append((self.meta[idx], float(D[0][rank])))
-        return out
+        self.index.add(vecs)
+        self._metas.extend(metas)
 
-    # --- NEW: persistence helpers ---
-    def save(self, dirpath: str):
-        os.makedirs(dirpath, exist_ok=True)
-        np.save(os.path.join(dirpath, "vectors.npy"), self.vecs if self.vecs is not None else np.zeros((0, self.index.d), dtype="float32"))
-        with open(os.path.join(dirpath, "meta.pkl"), "wb") as f:
-            pickle.dump(self.meta, f)
+    def search(self, query_vecs: Sequence[Sequence[float]] | np.ndarray, k: int) -> Tuple[np.ndarray, np.ndarray]:
+        q = np.asarray(query_vecs, dtype="float32")
+        if q.ndim != 2 or q.shape[1] != self.dim:
+            raise ValueError(f"Bad query shape {q.shape}; expected (Q, {self.dim})")
+        scores, idx = self.index.search(q, k)
+        return scores, idx  # scores: (Q,k), idx: (Q,k)
+
+    # ---------- NEW: persistence helpers ----------
+    def to_numpy(self) -> Tuple[np.ndarray, List[dict]]:
+        """
+        Return (matrix, metas) for persistence.
+        Matrix is float32 (N, dim) with rows normalized for cosine/IP.
+        """
+        if self._matrix is None:
+            return np.empty((0, self.dim), dtype="float32"), []
+        return self._matrix.astype("float32", copy=False), list(self._metas)
 
     @classmethod
-    def load(cls, dirpath: str, dim: int):
-        vectors_path = os.path.join(dirpath, "vectors.npy")
-        meta_path = os.path.join(dirpath, "meta.pkl")
-        if not (os.path.exists(vectors_path) and os.path.exists(meta_path)):
-            raise FileNotFoundError(f"Missing persisted index in {dirpath}")
-        vecs = np.load(vectors_path).astype("float32")
-        with open(meta_path, "rb") as f:
-            metas = pickle.load(f)
+    def from_numpy(cls, vecs: np.ndarray, metas: List[dict], dim: int) -> "FaissStore":
+        """
+        Rebuild a store from a matrix + metas.
+        """
         store = cls(dim)
         if vecs.size:
             store.add(vecs, metas)
         return store
+
+    # (Optional convenience)
+    def ntotal(self) -> int:
+        return self.index.ntotal

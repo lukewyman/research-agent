@@ -10,7 +10,7 @@ from newsrag_retrieval.embeddings import embedding_dim
 from newsrag_retrieval.retrieve import retrieve as retrieve_vector
 from newsrag_retrieval.hybrid import hybrid_retrieve as retrieve_hybrid  # comment this line if you didn't add hybrid.py
 from newsrag_retrieval.verify import verify_claims
-from newsrag_retrieval.synthesize import synthesize as grounded_summarize
+from newsrag_retrieval.synthesizeesize import synthesize as grounded_summarize
 
 
 def format_context(hits):

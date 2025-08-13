@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir uv
 COPY pyproject.toml uv.lock ./
 # Copy subpackage metadata so uv can resolve local packages without full source yet
 COPY packages/core/pyproject.toml packages/core/pyproject.toml
-COPY packages/rag/pyproject.toml  packages/rag/pyproject.toml
+COPY packages/retrieval/pyproject.toml   packages/retrieval/pyproject.toml
 COPY packages/api/pyproject.toml  packages/api/pyproject.toml
 COPY packages/tasks/pyproject.toml packages/tasks/pyproject.toml
 COPY packages/feeds/pyproject.toml packages/feeds/pyproject.toml
@@ -44,4 +44,4 @@ ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Default command (k8s overrides are fine)
-CMD ["uv", "run", "uvicorn", "research_api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "newsrag_api.app:app", "--host", "0.0.0.0", "--port", "8000"]

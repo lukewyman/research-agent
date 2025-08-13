@@ -5,12 +5,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 RUN pip install --no-cache-dir uv
 
 COPY pyproject.toml uv.lock ./
-COPY packages/core/pyproject.toml packages/core/pyproject.toml
-COPY packages/rag/pyproject.toml  packages/rag/pyproject.toml
-COPY packages/tasks/pyproject.toml packages/tasks/pyproject.toml
-COPY packages/feeds/pyproject.toml packages/feeds/pyproject.toml
-COPY packages/cache/pyproject.toml packages/cache/pyproject.toml
-COPY packages/api/pyproject.toml  packages/api/pyproject.toml
+# UPDATED paths:
+COPY packages/core/pyproject.toml        packages/core/pyproject.toml
+COPY packages/retrieval/pyproject.toml   packages/retrieval/pyproject.toml
+COPY packages/tasks/pyproject.toml       packages/tasks/pyproject.toml
+COPY packages/feeds/pyproject.toml       packages/feeds/pyproject.toml
+COPY packages/cache/pyproject.toml       packages/cache/pyproject.toml
+COPY packages/api/pyproject.toml         packages/api/pyproject.toml
 
 RUN uv venv /app/.venv
 ENV VIRTUAL_ENV=/app/.venv
@@ -26,4 +27,6 @@ COPY --from=builder /app/.venv /app/.venv
 COPY . /app
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
-CMD ["uv", "run", "celery", "-A", "research_tasks.celery_app.app", "worker", "-l", "info", "--concurrency", "2"]
+
+# UPDATED entrypoint to newsrag_tasks
+CMD ["uv","run","celery","-A","newsrag_tasks.celery_app.app","worker","-l","info","--concurrency","2"]

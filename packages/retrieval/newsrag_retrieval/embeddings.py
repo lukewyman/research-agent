@@ -6,6 +6,8 @@ from newsrag_core.config import OPENAI_API_KEY
 from newsrag_cache import get_redis, key_embed, mget_json, mset_json
 
 _EMBED_MODEL = "text-embedding-3-small"
+EMBED_MODEL = _EMBED_MODEL
+__all__ = ["embed_texts", "embedding_dim", "EMBED_MODEL"]
 _client = OpenAI(api_key=OPENAI_API_KEY)
 
 EMBED_TTL = int(os.getenv("CACHE_EMBED_TTL_SEC", "2592000"))  # 30d
